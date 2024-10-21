@@ -7,7 +7,6 @@ browser.webRequest.onBeforeRequest.addListener(
       // Verifica se o domínio da requisição é diferente do domínio da página
       if (currentDomain !== requestedDomain) {
         console.log(`Conexão de terceira parte detectada: ${requestedDomain}`);
-  
         // Armazena o domínio detectado no localStorage
         let storedConnections = JSON.parse(localStorage.getItem('thirdPartyConnections')) || [];
         if (!storedConnections.includes(requestedDomain)) {
