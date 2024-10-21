@@ -7,8 +7,8 @@ browser.webRequest.onBeforeRequest.addListener(
 
     // Armazena o domínio de origem no localStorage e reseta as conexões se mudar
     let storedUrl = localStorage.getItem('url');
-    if (storedUrl !== url) {
-        localStorage.setItem('url', url);
+    if (storedUrl !== requestedDomain) {
+        localStorage.setItem('url', requestedDomain);
         localStorage.setItem('thirdPartyConnections', JSON.stringify([]));
     }
     // Tenta pegar o domínio da página usando 'originUrl' ou 'tabId'
