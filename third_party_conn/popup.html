@@ -1,23 +1,57 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Conexões de Terceira Parte</title>
+  <title>Ferramentas de Detecção</title>
   <style>
     body {
       font-family: Arial, sans-serif;
       width: 300px;
     }
-    #connection-list {
-      margin-top: 10px;
+    .section {
+      display: none; /* Todas as seções começam ocultas */
+    }
+    .active {
+      display: block; /* Seção ativa será exibida */
+    }
+    button {
+      margin: 5px 0;
+      padding: 10px;
+      width: 100%;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #45a049;
     }
   </style>
 </head>
 <body>
-  <h2>Detected Connections</h2>
-  <div id="connection-list">
-    <ul id="domains"></ul>
+  <h2>Extensão de Navegação</h2>
+
+  <!-- Botões de navegação -->
+  <button id="btn-detect-connections">Detectar Conexões</button>
+  <button id="btn-show-cookies">Mostrar Cookies</button>
+  <button id="btn-show-storage">Ver Storage</button>
+
+  <!-- Seção de Detecção de Conexões -->
+  <div id="section-detect-connections" class="section">
+    <h3>Conexões de Terceira Parte</h3>
+    <ul id="connections-list"></ul>
   </div>
-  <p>In development</p>
+
+  <!-- Seção de Cookies -->
+  <div id="section-show-cookies" class="section">
+    <h3>Cookies</h3>
+    <p>Aqui você verá os cookies detectados.</p>
+  </div>
+
+  <!-- Seção de Storage -->
+  <div id="section-show-storage" class="section">
+    <h3>Armazenamento Local</h3>
+    <p>Aqui você verá os dados armazenados localmente.</p>
+  </div>
 
   <script src="popup.js"></script>
 </body>
