@@ -29,3 +29,10 @@ browser.webRequest.onBeforeRequest.addListener(
   },
   {urls: ["<all_urls>"]}
 );
+// Monitor when a tab is updated or a new tab is opened
+browser.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
+  if (changeInfo.status === 'complete') { // When the tab finishes loading
+    // Reset any parameters or data
+    localStorage.setItem('thirdPartyConnections', JSON.stringify([])); // Clear third-party connections
+  }
+});

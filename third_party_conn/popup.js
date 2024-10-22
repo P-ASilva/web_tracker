@@ -7,7 +7,6 @@ document.addEventListener('DOMContentLoaded', function() {
   const btnShowCookies = document.getElementById('btn-show-cookies');
   const btnShowStorage = document.getElementById('btn-show-storage');
 
-  // Função para ocultar todas as seções
   function hideAllSections() {
     connectionsSection.classList.remove('active');
     cookiesSection.classList.remove('active');
@@ -18,6 +17,8 @@ document.addEventListener('DOMContentLoaded', function() {
   btnDetectConnections.addEventListener('click', function() {
     hideAllSections();
     connectionsSection.classList.add('active');
+
+    // Reseta a lista de conexões
     let storedConnections = JSON.parse(localStorage.getItem('thirdPartyConnections')) || [];
     const connectionsList = document.getElementById('connections-list');
     connectionsList.innerHTML = ''; // Limpa a lista antes de popular
