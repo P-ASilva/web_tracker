@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', function() {
-  // Seleciona as seções e os botões
   const connectionsSection = document.getElementById('section-detect-connections');
   const cookiesSection = document.getElementById('section-show-cookies');
   const storageSection = document.getElementById('section-show-storage');
@@ -19,8 +18,6 @@ document.addEventListener('DOMContentLoaded', function() {
   btnDetectConnections.addEventListener('click', function() {
     hideAllSections();
     connectionsSection.classList.add('active');
-
-    // Mostra as conexões detectadas (já implementado)
     let storedConnections = JSON.parse(localStorage.getItem('thirdPartyConnections')) || [];
     const connectionsList = document.getElementById('connections-list');
     connectionsList.innerHTML = ''; // Limpa a lista antes de popular
@@ -35,28 +32,36 @@ document.addEventListener('DOMContentLoaded', function() {
   btnShowCookies.addEventListener('click', function() {
     hideAllSections();
     cookiesSection.classList.add('active');
-
-    // Limpa a lista de cookies
+  
     const cookiesList = document.createElement('ul');
     cookiesSection.appendChild(cookiesList);
-
-    // Obtém os cookies da aba atual
-    browser.cookies.getAll({}).then(cookies => {
-      cookiesList.innerHTML = '';  // Limpa antes de exibir os novos cookies
-      cookies.forEach(cookie => {
-        const listItem = document.createElement('li');
-        listItem.textContent = `${cookie.name}: ${cookie.value}`;
-        cookiesList.appendChild(listItem);
+  
+    // Get cookies from the active tab
+    browser.tabs.query({active: true, currentWindow: true}).then(tabs => {
+      let url = tabs[0].url;
+      let domain = (new URL(url)).hostname;
+  
+      browser.cookies.getAll({domain: domain}).then(cookies => {
+        cookiesList.innerHTML = '';  // Clear the list before populating
+        if (cookies.length === 0) {
+          cookiesList.textContent = 'No cookies found for this site.';
+        } else {
+          cookies.forEach(cookie => {
+            const listItem = document.createElement('li');
+            listItem.textContent = `${cookie.name}: ${cookie.value}`;
+            cookiesList.appendChild(listItem);
+          });
+        }
       });
     });
   });
+  
 
   // Exibir a seção de Storage (LocalStorage)
   btnShowStorage.addEventListener('click', function() {
     hideAllSections();
     storageSection.classList.add('active');
 
-    // Verifica e exibe o localStorage da aba atual
     const storageList = document.createElement('ul');
     storageSection.appendChild(storageList);
 
