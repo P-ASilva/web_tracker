@@ -23,8 +23,8 @@ button:hover {
 h2 {
     margin: 0;
     padding: 10px;
-    background-color: #4CAF50;
-    color: white;
+    /* background-color: #4CAF50;
+    color: white; */
     align-self: center;
 }
 ul {
