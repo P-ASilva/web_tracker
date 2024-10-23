@@ -1,17 +1,17 @@
-// Variáveis globais para armazenar as deduções
-let cookieDeductions = 0;
-let storageDeductions = 0;
-let hijackingDeductions = 0;
-let canvasDeductions = 0;
+// Variáveis globais para armazenar as deduções e resultados das verificações
+let cookieResults = { totalCookies: 0, thirdPartyCookies: 0, deductions: 0 };
+let storageResults = { localStorageItems: 0, deductions: 0 };
+let hijackingResults = { hijackingDetected: false, deductions: 0 };
+let canvasResults = { canvasDetected: false, deductions: 0 };
 
 // Escuta mensagens do popup.js para enviar os resultados das verificações
 browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.type === "getResults") {
     sendResponse({
-      cookieDeductions,
-      storageDeductions,
-      hijackingDeductions,
-      canvasDeductions
+      ...cookieResults,
+      ...storageResults,
+      ...hijackingResults,
+      ...canvasResults
     });
   }
 
@@ -36,25 +36,25 @@ async function performChecks(tabId) {
 
   // Verifica cookies
   const cookiesResult = await checkCookies(tabId);
-  cookieDeductions = cookiesResult.deductions;
+  cookieResults = cookiesResult;
 
   // Verifica armazenamento local
   const storageResult = await checkStorage(tabId);
-  storageDeductions = storageResult.deductions;
+  storageResults = storageResult;
 
   // Verifica hijacking
   const hijackingResult = await checkHijacking(tabId);
-  hijackingDeductions = hijackingResult.deductions;
+  hijackingResults = hijackingResult;
 
   // Verifica Canvas Fingerprinting
   const canvasResult = await checkCanvas(tabId);
-  canvasDeductions = canvasResult.deductions;
+  canvasResults = canvasResult;
 
   console.log("Verificações concluídas:", {
-    cookieDeductions,
-    storageDeductions,
-    hijackingDeductions,
-    canvasDeductions
+    cookieResults,
+    storageResults,
+    hijackingResults,
+    canvasResults
   });
 }
 
@@ -109,17 +109,17 @@ async function checkCanvas(tabId) {
     code: `(() => {
       const canvas = document.createElement('canvas');
       const ctx = canvas.getContext('2d');
-      return !!ctx;
+      return !!ctx;  // Retorna true se houver um contexto de canvas
     })()`
   });
   let deductions = result[0] ? 20 : 0;
   return { canvasDetected: result[0], deductions };
 }
 
-// Função para resetar deduções
+// Função para resetar deduções e resultados
 function resetDeductions() {
-  cookieDeductions = 0;
-  storageDeductions = 0;
-  hijackingDeductions = 0;
-  canvasDeductions = 0;
+  cookieResults = { totalCookies: 0, thirdPartyCookies: 0, deductions: 0 };
+  storageResults = { localStorageItems: 0, deductions: 0 };
+  hijackingResults = { hijackingDetected: false, deductions: 0 };
+  canvasResults = { canvasDetected: false, deductions: 0 };
 }

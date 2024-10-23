@@ -1,41 +1,21 @@
 document.addEventListener('DOMContentLoaded', function() {
+  const btnCalculateScore = document.getElementById('btn-privacy-score');
   const scoreSection = document.getElementById('section-privacy-score');
   const cookiesSection = document.getElementById('section-results-cookies');
   const storageSection = document.getElementById('section-results-storage');
   const hijackingSection = document.getElementById('section-results-hijacking');
   const canvasSection = document.getElementById('section-results-canvas');
 
-  // Função para esconder todas as seções
-  function hideAllSections() {
-    cookiesSection.classList.remove('active');
-    storageSection.classList.remove('active');
-    hijackingSection.classList.remove('active');
-    canvasSection.classList.remove('active');
-    scoreSection.classList.remove('active');
-  }
   // Função para exibir resultados de Cookies
   document.getElementById('btn-show-cookies').addEventListener('click', function() {
     hideAllSections();
     cookiesSection.classList.add('active');
-    console.log('show cookies');
 
-    browser.cookies.getAll({domain: domain}).then(cookies => {
-      cookiesList.innerHTML = '';  // Clear the list before populating
-      if (cookies.length === 0) {
-        cookiesList.textContent = 'No cookies found for this site.';
-      } else {
-        cookies.forEach(cookie => {
-          const listItem = document.createElement('li');
-          listItem.textContent = `${cookie.name}: ${cookie.value}`;
-          cookiesList.appendChild(listItem);
-        });
-      }
+    browser.runtime.sendMessage({ type: "getResults" }).then(result => {
+      const { totalCookies, thirdPartyCookies } = result;
+      document.getElementById('results-cookies').textContent = 
+        `Total de cookies: ${totalCookies}, Cookies de terceira parte: ${thirdPartyCookies}`;
     });
-    // browser.runtime.sendMessage({ type: "getResults" }).then(result => {
-    //   const { totalCookies, thirdPartyCookies } = result;
-    //   document.getElementById('results-cookies').textContent = 
-    //     `Total de cookies: ${totalCookies}, Cookies de terceira parte: ${thirdPartyCookies}`;
-    // });
   });
 
   // Função para exibir resultados de Armazenamento Local
@@ -75,7 +55,7 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
   // Função para calcular a pontuação de privacidade
-  document.getElementById('btn-privacy-score').addEventListener('click', function() {
+  btnCalculateScore.addEventListener('click', function() {
     hideAllSections();
     scoreSection.classList.add('active');
 
@@ -90,5 +70,12 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
 
-
+  // Função para esconder todas as seções
+  function hideAllSections() {
+    scoreSection.classList.remove('active');
+    cookiesSection.classList.remove('active');
+    storageSection.classList.remove('active');
+    hijackingSection.classList.remove('active');
+    canvasSection.classList.remove('active');
+  }
 });
