@@ -31,6 +31,7 @@ browser.webRequest.onBeforeRequest.addListener(
         }
       }
   
+  
     },
     {urls: ["<all_urls>"]}
   );

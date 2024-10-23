@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const btnCalculateScore = document.getElementById('btn-privacy-score');
 
   function hideAllSections() {
+    connectionsSection.classList.remove('active');
     btnCalculateScore.classList.remove('active');
     scoreSection.classList.remove('active');
     cookiesSection.classList.remove('active');
