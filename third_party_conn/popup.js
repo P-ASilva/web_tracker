@@ -6,6 +6,9 @@ document.addEventListener('DOMContentLoaded', function() {
   const btnDetectConnections = document.getElementById('btn-detect-connections');
   const btnShowCookies = document.getElementById('btn-show-cookies');
   const btnShowStorage = document.getElementById('btn-show-storage');
+  const btnDetectHijacking = document.getElementById('btn-detect-hijacking');
+  const btnDetectCanvas = document.getElementById('btn-detect-canvas');
+  const btnCalculateScore = document.getElementById('btn-calculate-score');
 
   function hideAllSections() {
     connectionsSection.classList.remove('active');
@@ -60,7 +63,7 @@ document.addEventListener('DOMContentLoaded', function() {
   btnShowStorage.addEventListener('click', function() {
     hideAllSections();
     storageSection.classList.add('active');
-
+    // console.log(storageSection.classList);
     // Verifica e exibe o localStorage da aba atual
     const storageList = document.createElement('ul');
     storageSection.appendChild(storageList);
