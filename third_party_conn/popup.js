@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', function() {
-  const btnCalculateScore = document.getElementById('btn-privacy-score');
   const scoreSection = document.getElementById('section-privacy-score');
   const cookiesSection = document.getElementById('section-results-cookies');
   const storageSection = document.getElementById('section-results-storage');
@@ -55,7 +54,7 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
   // Função para calcular a pontuação de privacidade
-  btnCalculateScore.addEventListener('click', function() {
+  document.getElementById('btn-privacy-score').addEventListener('click', function() {
     hideAllSections();
     scoreSection.classList.add('active');
 
