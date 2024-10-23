@@ -8,7 +8,15 @@ document.addEventListener('DOMContentLoaded', function() {
   const connectionsSection = document.getElementById('section-detect-connections');
 
   const btnCalculateScore = document.getElementById('btn-privacy-score');
-  
+
+  function hideAllSections() {
+    btnCalculateScore.classList.remove('active');
+    scoreSection.classList.remove('active');
+    cookiesSection.classList.remove('active');
+    storageSection.classList.remove('active');
+    hijackingSection.classList.remove('active');
+    canvasSection.classList.remove('active');
+  }
   // Exibir a seção de Conexões de Terceira Parte
   document.getElementById('btn-detect-connections').addEventListener('click', function() {
     hideAllSections();
@@ -35,13 +43,4 @@ document.addEventListener('DOMContentLoaded', function() {
         `Total de cookies: ${totalCookies}, Cookies de terceira parte: ${thirdPartyCookies}`;
     });
   });
-  function hideAllSections() {
-    btnCalculateScore.classList.remove('active');
-    scoreSection.classList.remove('active');
-    cookiesSection.classList.remove('active');
-    storageSection.classList.remove('active');
-    hijackingSection.classList.remove('active');
-    canvasSection.classList.remove('active');
-  }
-
 });
