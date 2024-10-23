@@ -67,19 +67,20 @@ async function performChecks(tabId) {
 
   // Verifica cookies
   const cookiesResult = await checkCookies(tabId);
-  cookieResults = cookiesResult;
+  localStorage.setItem("totalCookies", JSON.stringify(cookiesResult.totalCookies));
+  localStorage.setItem("thirdPartyCookies", JSON.stringify(cookiesResult.thirdPartyCookies));
 
   // Verifica armazenamento local
   const storageResult = await checkStorage(tabId);
-  storageResults = storageResult;
+  localStorage.setItem("storageItems", JSON.stringify(storageResult));
 
   // Verifica hijacking
   const hijackingResult = await checkHijacking(tabId);
-  hijackingResults = hijackingResult;
+  localStorage.setItem("hijackingResults", JSON.stringify(hijackingResult));
 
   // Verifica Canvas Fingerprinting
   const canvasResult = await checkCanvas(tabId);
-  canvasResults = canvasResult;
+  localStorage.setItem("canvasResults", JSON.stringify(canvasResult));
 
   console.log("Verificações concluídas:", {
     cookieResults,

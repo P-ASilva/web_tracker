@@ -7,8 +7,6 @@ document.addEventListener('DOMContentLoaded', function() {
   const canvasSection = document.getElementById('section-detect-canvas');
   const connectionsSection = document.getElementById('section-detect-connections');
 
-  const btnCalculateScore = document.getElementById('btn-privacy-score');
-
   function hideAllSections() {
     connectionsSection.classList.remove('active');
     btnCalculateScore.classList.remove('active');
@@ -37,34 +35,56 @@ document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('btn-show-cookies').addEventListener('click', function() {
     hideAllSections();
     cookiesSection.classList.add('active');
-
-    browser.runtime.sendMessage({ type: "getResults" }).then(result => {
-      const { totalCookies, thirdPartyCookies } = result;
-      document.getElementById('results-cookies').textContent = 
-        `Total de cookies: ${totalCookies}, Cookies de terceira parte: ${thirdPartyCookies}`;
-    });
+    totalCookies = JSON.parse(localStorage.getItem('totalCookies'));
+    thirdPartyCookies = JSON.parse(localStorage.getItem('thirdPartyCookies'));
+    document.getElementById('results-cookies').textContent =  `Total de cookies: ${totalCookies}, Cookies de terceira parte: ${thirdPartyCookies}`;
   });
+
   // Função para exibir resultados de Armazenamento Local
   document.getElementById('btn-show-storage').addEventListener('click', function() {
     hideAllSections();
     storageSection.classList.add('active');
+    result = localStorage.getItem('storageItems');
 
-    browser.runtime.sendMessage({ type: "getResults" }).then(result => {
-      const { localStorageItems } = result;
-      document.getElementById('results-storage').textContent = 
-        `Itens no armazenamento local: ${localStorageItems}`;
-    });
+    const { localStorageItems } = result;
+    document.getElementById('results-storage').textContent = 
+      `Itens no armazenamento local: ${localStorageItems}`;
   });
 
   // Função para exibir resultados de Hijacking
   document.getElementById('btn-detect-hijacking').addEventListener('click', function() {
     hideAllSections();
     hijackingSection.classList.add('active');
+    result = localStorage.getItem('hijackingResults');
 
-    browser.runtime.sendMessage({ type: "getResults" }).then(result => {
-      const { hijackingDetected } = result;
-      document.getElementById('results-hijacking').textContent = 
-        hijackingDetected ? 'Hijacking detectado!' : 'Nenhum Hijacking detectado.';
-    });
+    const { hijackingDetected } = result;
+    document.getElementById('results-hijacking').textContent = 
+      hijackingDetected ? 'Hijacking detectado!' : 'Nenhum Hijacking detectado.';
   });
+
+  // Função para exibir resultados de Canvas Fingerprinting
+  document.getElementById('btn-detect-canvas').addEventListener('click', function() {
+    hideAllSections();
+    canvasSection.classList.add('active');
+    result = localStorage.getItem('canvasResults');
+
+    const { canvasDetected } = result;
+    document.getElementById('results-canvas').textContent = 
+      canvasDetected ? 'Canvas Fingerprinting detectado!' : 'Nenhum Canvas Fingerprinting detectado.';
+  });
+  
+  document.getElementById('btn-privacy-score').addEventListener('click', function() {
+    hideAllSections();
+    scoreSection.classList.add('active');
+    result = localStorage.getItem('scoreResults');
+
+      const { cookieDeductions, storageDeductions, hijackingDeductions, canvasDeductions } = result;
+      
+      let score = 100;
+      let totalDeductions = (cookieDeductions || 0) + (storageDeductions || 0) + (hijackingDeductions || 0) + (canvasDeductions || 0);
+      const finalScore = Math.max(0, score - totalDeductions); // Garante que a pontuação não seja negativa
+
+      document.getElementById('privacy-score').textContent = `Pontuação de Privacidade: ${finalScore}/100`;
+  });
+  
 });
