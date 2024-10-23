@@ -4,20 +4,23 @@ document.addEventListener('DOMContentLoaded', function() {
   const storageSection = document.getElementById('section-show-storage');
   const hijackingSection = document.getElementById('section-detect-hijacking');
   const canvasSection = document.getElementById('section-detect-canvas');
-  const scoreSection = document.getElementById('section-calculate-score');
+  const scoreSection = document.getElementById('section-privacy-score');
 
   const btnDetectConnections = document.getElementById('btn-detect-connections');
   const btnShowCookies = document.getElementById('btn-show-cookies');
   const btnShowStorage = document.getElementById('btn-show-storage');
   const btnDetectHijacking = document.getElementById('btn-detect-hijacking');
   const btnDetectCanvas = document.getElementById('btn-detect-canvas');
-  const btnCalculateScore = document.getElementById('btn-calculate-score');
-  
+  const btnCalculateScore = document.getElementById('btn-privacy-score');
+
 
   function hideAllSections() {
     connectionsSection.classList.remove('active');
     cookiesSection.classList.remove('active');
     storageSection.classList.remove('active');
+    hijackingSection.classList.remove('active');
+    canvasSection.classList.remove('active');
+    scoreSection.classList.remove('active');
   }
 
   // Exibir a seção de Conexões de Terceira Parte
