@@ -52,13 +52,13 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
   }
 });
 
-// Monitora quando uma aba termina de carregar e realiza as verificações
-browser.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-  if (changeInfo.status === 'complete') {
-    // Realiza todas as verificações quando a página é completamente carregada
-    performChecks(tabId);
-  }
-});
+browser.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
+    if (changeInfo.status === 'complete') { // When the tab finishes loading
+      // Reset any parameters or data
+      localStorage.setItem('thirdPartyConnections', JSON.stringify([])); // Clear third-party connections
+      performChecks(tabId);
+    }
+  });
 
 // Função para realizar todas as verificações (cookies, storage, hijacking, canvas)
 async function performChecks(tabId) {
