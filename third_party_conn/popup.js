@@ -34,9 +34,28 @@ document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('btn-show-cookies').addEventListener('click', function() {
     hideAllSections();
     cookiesSection.classList.add('active');
-    totalCookies = JSON.parse(localStorage.getItem('totalCookies'));
-    thirdPartyCookies = JSON.parse(localStorage.getItem('thirdPartyCookies'));
-    document.getElementById('results-cookies').textContent =  `Total de cookies: ${totalCookies}, Cookies de terceira parte: ${thirdPartyCookies}`;
+  
+    const cookiesList = document.createElement('ul');
+    cookiesSection.appendChild(cookiesList);
+  
+    // Get cookies from the active tab
+    browser.tabs.query({active: true, currentWindow: true}).then(tabs => {
+      let url = tabs[0].url;
+      let domain = (new URL(url)).hostname;
+  
+      browser.cookies.getAll({domain: domain}).then(cookies => {
+        cookiesList.innerHTML = '';  // Clear the list before populating
+        if (cookies.length === 0) {
+          cookiesList.textContent = 'No cookies found for this site.';
+        } else {
+          cookies.forEach(cookie => {
+            const listItem = document.createElement('li');
+            listItem.textContent = `${cookie.name}: ${cookie.value}`;
+            cookiesList.appendChild(listItem);
+          });
+        }
+      });
+    });
   });
 
   // Função para exibir resultados de Armazenamento Local
