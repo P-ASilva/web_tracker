@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('btn-detect-connections').addEventListener('click', function() {
     hideAllSections();
     connectionsSection.classList.add('active');
-
+    browser.runtime.sendMessage({ type: "getResults" })
     // Reseta a lista de conexões
     let storedConnections = JSON.parse(localStorage.getItem('thirdPartyConnections')) || [];
     const connectionsList = document.getElementById('connections-list');
@@ -78,13 +78,13 @@ document.addEventListener('DOMContentLoaded', function() {
     scoreSection.classList.add('active');
     result = localStorage.getItem('scoreResults');
 
-      const { cookieDeductions, storageDeductions, hijackingDeductions, canvasDeductions } = result;
-      
-      let score = 100;
-      let totalDeductions = (cookieDeductions || 0) + (storageDeductions || 0) + (hijackingDeductions || 0) + (canvasDeductions || 0);
-      const finalScore = Math.max(0, score - totalDeductions); // Garante que a pontuação não seja negativa
+    const { cookieDeductions, storageDeductions, hijackingDeductions, canvasDeductions } = result;
+    
+    let score = 100;
+    let totalDeductions = (cookieDeductions || 0) + (storageDeductions || 0) + (hijackingDeductions || 0) + (canvasDeductions || 0);
+    const finalScore = Math.max(0, score - totalDeductions); // Garante que a pontuação não seja negativa
 
-      document.getElementById('privacy-score').textContent = `Pontuação de Privacidade: ${finalScore}/100`;
+    document.getElementById('privacy-score').textContent = `Pontuação de Privacidade: ${finalScore}/100`;
   });
   
 });
