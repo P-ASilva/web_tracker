@@ -28,6 +28,6 @@ h2 {
     align-self: center;
 }
 ul {
-    list-style-type: none;
+    list-style-type: upper-roman;
     padding: 0;
 }
