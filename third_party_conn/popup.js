@@ -6,76 +6,62 @@ document.addEventListener('DOMContentLoaded', function() {
   const hijackingSection = document.getElementById('section-results-hijacking');
   const canvasSection = document.getElementById('section-results-canvas');
 
-  // Função para exibir resultados de Cookies
-  document.getElementById('btn-show-cookies').addEventListener('click', function() {
+  const btnDetectConnections = document.getElementById('btn-detect-connections');
+  const btnShowCookies = document.getElementById('btn-show-cookies');
+  const btnShowStorage = document.getElementById('btn-show-storage');
+  const btnDetectHijacking = document.getElementById('btn-detect-hijacking');
+  const btnDetectCanvas = document.getElementById('btn-detect-canvas');
+  
+  // Exibir a seção de Conexões de Terceira Parte
+  btnDetectConnections.addEventListener('click', function() {
+    hideAllSections();
+    connectionsSection.classList.add('active');
+
+    // Reseta a lista de conexões
+    let storedConnections = JSON.parse(localStorage.getItem('thirdPartyConnections')) || [];
+    const connectionsList = document.getElementById('connections-list');
+    connectionsList.innerHTML = ''; // Limpa a lista antes de popular
+    storedConnections.forEach(domain => {
+      const listItem = document.createElement('li');
+      listItem.textContent = domain;
+      connectionsList.appendChild(listItem);
+    });
+  });
+  
+  btnShowCookies.addEventListener('click', function() {
     hideAllSections();
     cookiesSection.classList.add('active');
-
-    browser.runtime.sendMessage({ type: "getResults" }).then(result => {
-      const { totalCookies, thirdPartyCookies } = result;
-      document.getElementById('results-cookies').textContent = 
-        `Total de cookies: ${totalCookies}, Cookies de terceira parte: ${thirdPartyCookies}`;
+  
+    const cookiesList = document.createElement('ul');
+    cookiesSection.appendChild(cookiesList);
+  
+    // Get cookies from the active tab
+    browser.tabs.query({active: true, currentWindow: true}).then(tabs => {
+      let url = tabs[0].url;
+      let domain = (new URL(url)).hostname;
+  
+      browser.cookies.getAll({domain: domain}).then(cookies => {
+        cookiesList.innerHTML = '';  // Clear the list before populating
+        if (cookies.length === 0) {
+          cookiesList.textContent = 'No cookies found for this site.';
+        } else {
+          cookies.forEach(cookie => {
+            const listItem = document.createElement('li');
+            listItem.textContent = `${cookie.name}: ${cookie.value}`;
+            cookiesList.appendChild(listItem);
+          });
+        }
+      });
     });
   });
 
-  // Função para exibir resultados de Armazenamento Local
-  document.getElementById('btn-show-storage').addEventListener('click', function() {
-    hideAllSections();
-    storageSection.classList.add('active');
-
-    browser.runtime.sendMessage({ type: "getResults" }).then(result => {
-      const { localStorageItems } = result;
-      document.getElementById('results-storage').textContent = 
-        `Itens no armazenamento local: ${localStorageItems}`;
-    });
-  });
-
-  // Função para exibir resultados de Hijacking
-  document.getElementById('btn-detect-hijacking').addEventListener('click', function() {
-    hideAllSections();
-    hijackingSection.classList.add('active');
-
-    browser.runtime.sendMessage({ type: "getResults" }).then(result => {
-      const { hijackingDetected } = result;
-      document.getElementById('results-hijacking').textContent = 
-        hijackingDetected ? 'Hijacking detectado!' : 'Nenhum Hijacking detectado.';
-    });
-  });
-
-  // Função para exibir resultados de Canvas Fingerprinting
-  document.getElementById('btn-detect-canvas').addEventListener('click', function() {
-    hideAllSections();
-    canvasSection.classList.add('active');
-
-    browser.runtime.sendMessage({ type: "getResults" }).then(result => {
-      const { canvasDetected } = result;
-      document.getElementById('results-canvas').textContent = 
-        canvasDetected ? 'Canvas Fingerprinting detectado!' : 'Nenhum Canvas Fingerprinting detectado.';
-    });
-  });
-
-  // Função para calcular a pontuação de privacidade
-  btnCalculateScore.addEventListener('click', function() {
-    hideAllSections();
-    scoreSection.classList.add('active');
-
-    browser.runtime.sendMessage({ type: "getResults" }).then(result => {
-      const { cookieDeductions, storageDeductions, hijackingDeductions, canvasDeductions } = result;
-      
-      let score = 100;
-      let totalDeductions = (cookieDeductions || 0) + (storageDeductions || 0) + (hijackingDeductions || 0) + (canvasDeductions || 0);
-      const finalScore = Math.max(0, score - totalDeductions); // Garante que a pontuação não seja negativa
-
-      document.getElementById('privacy-score').textContent = `Pontuação de Privacidade: ${finalScore}/100`;
-    });
-  });
-
-  // Função para esconder todas as seções
   function hideAllSections() {
+    btnCalculateScore.classList.remove('active');
     scoreSection.classList.remove('active');
     cookiesSection.classList.remove('active');
     storageSection.classList.remove('active');
     hijackingSection.classList.remove('active');
     canvasSection.classList.remove('active');
   }
+
 });
