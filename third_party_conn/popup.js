@@ -2,6 +2,9 @@ document.addEventListener('DOMContentLoaded', function() {
   const connectionsSection = document.getElementById('section-detect-connections');
   const cookiesSection = document.getElementById('section-show-cookies');
   const storageSection = document.getElementById('section-show-storage');
+  const hijackingSection = document.getElementById('section-detect-hijacking');
+  const canvasSection = document.getElementById('section-detect-canvas');
+  const scoreSection = document.getElementById('section-calculate-score');
 
   const btnDetectConnections = document.getElementById('btn-detect-connections');
   const btnShowCookies = document.getElementById('btn-show-cookies');
@@ -9,6 +12,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const btnDetectHijacking = document.getElementById('btn-detect-hijacking');
   const btnDetectCanvas = document.getElementById('btn-detect-canvas');
   const btnCalculateScore = document.getElementById('btn-calculate-score');
+  
 
   function hideAllSections() {
     connectionsSection.classList.remove('active');
