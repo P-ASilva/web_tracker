@@ -7,7 +7,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Função para esconder todas as seções
   function hideAllSections() {
-    connectionsSection.classList.remove('active');
     cookiesSection.classList.remove('active');
     storageSection.classList.remove('active');
     hijackingSection.classList.remove('active');
