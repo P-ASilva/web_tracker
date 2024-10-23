@@ -57,51 +57,118 @@ document.addEventListener('DOMContentLoaded', function() {
       });
     });
   });
-
   // Função para exibir resultados de Armazenamento Local
   document.getElementById('btn-show-storage').addEventListener('click', function() {
     hideAllSections();
     storageSection.classList.add('active');
-    result = localStorage.getItem('storageItems');
+    // console.log(storageSection.classList);
+    // Verifica e exibe o localStorage da aba atual
+    const storageList = document.createElement('ul');
+    storageSection.appendChild(storageList);
 
-    const { localStorageItems } = result;
-    document.getElementById('results-storage').textContent = 
-      `Itens no armazenamento local: ${localStorageItems}`;
+    browser.tabs.query({active: true, currentWindow: true}).then(tabs => {
+      browser.tabs.executeScript(tabs[0].id, {
+        code: `Object.entries(localStorage).map(([key, value]) => key + ": " + value)`
+      }).then(results => {
+        storageList.innerHTML = '';  // Limpa a lista antes de popular
+        results[0].forEach(item => {
+          const listItem = document.createElement('li');
+          listItem.textContent = item;
+          storageList.appendChild(listItem);
+        });
+      });
+    });
   });
 
   // Função para exibir resultados de Hijacking
   document.getElementById('btn-detect-hijacking').addEventListener('click', function() {
     hideAllSections();
     hijackingSection.classList.add('active');
-    result = localStorage.getItem('hijackingResults');
 
-    const { hijackingDetected } = result;
-    document.getElementById('results-hijacking').textContent = 
-      hijackingDetected ? 'Hijacking detectado!' : 'Nenhum Hijacking detectado.';
+    const hijackingList = document.getElementById('hijacking-list');
+    hijackingList.innerHTML = ''; // Limpa a lista
+
+    browser.tabs.query({active: true, currentWindow: true}).then(tabs => {
+      browser.tabs.executeScript(tabs[0].id, {
+        code: `(() => {
+          let hijackingDetected = false;
+          if (window.location.href !== document.referrer) {
+            hijackingDetected = true;
+          }
+          hijackingDetected;
+        })()`
+      }).then(result => {
+        if (result[0]) {
+          hijackingList.textContent = 'Potencial ameaça de Hijacking detectada!';
+        } else {
+          hijackingList.textContent = 'Nenhuma ameaça de Hijacking encontrada.';
+        }
+      });
+    });
   });
 
   // Função para exibir resultados de Canvas Fingerprinting
   document.getElementById('btn-detect-canvas').addEventListener('click', function() {
     hideAllSections();
     canvasSection.classList.add('active');
-    result = localStorage.getItem('canvasResults');
 
-    const { canvasDetected } = result;
-    document.getElementById('results-canvas').textContent = 
-      canvasDetected ? 'Canvas Fingerprinting detectado!' : 'Nenhum Canvas Fingerprinting detectado.';
+    const canvasList = document.getElementById('canvas-list');
+    canvasList.innerHTML = ''; 
+
+    browser.tabs.query({active: true, currentWindow: true}).then(tabs => {
+      browser.tabs.executeScript(tabs[0].id, {
+        code: `(() => {
+          let canvasDetected = false;
+          const canvas = document.createElement('canvas');
+          const ctx = canvas.getContext('2d');
+          if (ctx) {
+            canvasDetected = true;
+          }
+          canvasDetected;
+        })()`
+      }).then(result => {
+        if (result[0]) {
+          canvasList.textContent = 'Tentativa de Canvas Fingerprinting detectada!';
+        } else {
+          canvasList.textContent = 'Nenhuma tentativa de Canvas Fingerprinting detectada.';
+        }
+      });
+    });
   });
   
   document.getElementById('btn-privacy-score').addEventListener('click', function() {
     hideAllSections();
     scoreSection.classList.add('active');
-    result = localStorage.getItem('scoreResults');
 
-    const { cookieDeductions, storageDeductions, hijackingDeductions, canvasDeductions } = result;
-    
-    let score = 100;
-    let totalDeductions = (cookieDeductions || 0) + (storageDeductions || 0) + (hijackingDeductions || 0) + (canvasDeductions || 0);
-    const finalScore = Math.max(0, score - totalDeductions); // Garante que a pontuação não seja negativa
+    let score = 100;  // Começamos com uma pontuação perfeita
+    let deductions = 0;
 
+    // Verifica o número de cookies e faz deduções
+    browser.cookies.getAll({}).then(cookies => {
+      const totalCookies = cookies.length;
+      if (totalCookies > 10) {
+        deductions += 10;  // Deduz 10 pontos se houver mais de 10 cookies
+      }
+    });
+
+    // Verifica se houve armazenamento local
+    browser.tabs.query({active: true, currentWindow: true}).then(tabs => {
+      browser.tabs.executeScript(tabs[0].id, {
+        code: `Object.keys(localStorage).length`
+      }).then(result => {
+        if (result[0] > 0) {
+          deductions += 15;  // Deduz 15 pontos se houver dados armazenados localmente
+        }
+      });
+    });
+
+    // Verifica se houve Canvas Fingerprinting ou Hijacking
+    if (canvasSection.textContent.includes('detectada') || hijackingSection.textContent.includes('detectada')) {
+      deductions += 20;  // Deduz 20 pontos para cada tipo de ataque
+    }
+
+    // Exibe a pontuação final
+    const finalScore = score - deductions;
     document.getElementById('privacy-score').textContent = `Pontuação de Privacidade: ${finalScore}/100`;
   });
   
