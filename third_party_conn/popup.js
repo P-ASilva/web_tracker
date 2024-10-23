@@ -1,11 +1,13 @@
 document.addEventListener('DOMContentLoaded', function() {
-  const btnCalculateScore = document.getElementById('btn-privacy-score');
+  
   const scoreSection = document.getElementById('section-privacy-score');
-  const cookiesSection = document.getElementById('section-results-cookies');
-  const storageSection = document.getElementById('section-results-storage');
-  const hijackingSection = document.getElementById('section-results-hijacking');
-  const canvasSection = document.getElementById('section-results-canvas');
+  const cookiesSection = document.getElementById('section-show-cookies');
+  const storageSection = document.getElementById('section-show-storage');
+  const hijackingSection = document.getElementById('section-detect-hijacking');
+  const canvasSection = document.getElementById('section-detect-canvas');
+  const connectionsSection = document.getElementById('section-detect-connections');
 
+  const btnCalculateScore = document.getElementById('btn-privacy-score');
   const btnDetectConnections = document.getElementById('btn-detect-connections');
   const btnShowCookies = document.getElementById('btn-show-cookies');
   const btnShowStorage = document.getElementById('btn-show-storage');
@@ -25,33 +27,6 @@ document.addEventListener('DOMContentLoaded', function() {
       const listItem = document.createElement('li');
       listItem.textContent = domain;
       connectionsList.appendChild(listItem);
-    });
-  });
-  
-  btnShowCookies.addEventListener('click', function() {
-    hideAllSections();
-    cookiesSection.classList.add('active');
-  
-    const cookiesList = document.createElement('ul');
-    cookiesSection.appendChild(cookiesList);
-  
-    // Get cookies from the active tab
-    browser.tabs.query({active: true, currentWindow: true}).then(tabs => {
-      let url = tabs[0].url;
-      let domain = (new URL(url)).hostname;
-  
-      browser.cookies.getAll({domain: domain}).then(cookies => {
-        cookiesList.innerHTML = '';  // Clear the list before populating
-        if (cookies.length === 0) {
-          cookiesList.textContent = 'No cookies found for this site.';
-        } else {
-          cookies.forEach(cookie => {
-            const listItem = document.createElement('li');
-            listItem.textContent = `${cookie.name}: ${cookie.value}`;
-            cookiesList.appendChild(listItem);
-          });
-        }
-      });
     });
   });
 
