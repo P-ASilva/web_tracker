@@ -8,14 +8,9 @@ document.addEventListener('DOMContentLoaded', function() {
   const connectionsSection = document.getElementById('section-detect-connections');
 
   const btnCalculateScore = document.getElementById('btn-privacy-score');
-  const btnDetectConnections = document.getElementById('btn-detect-connections');
-  const btnShowCookies = document.getElementById('btn-show-cookies');
-  const btnShowStorage = document.getElementById('btn-show-storage');
-  const btnDetectHijacking = document.getElementById('btn-detect-hijacking');
-  const btnDetectCanvas = document.getElementById('btn-detect-canvas');
   
   // Exibir a seção de Conexões de Terceira Parte
-  btnDetectConnections.addEventListener('click', function() {
+  document.getElementById('btn-detect-connections').addEventListener('click', function() {
     hideAllSections();
     connectionsSection.classList.add('active');
 
@@ -29,7 +24,17 @@ document.addEventListener('DOMContentLoaded', function() {
       connectionsList.appendChild(listItem);
     });
   });
+  // Função para exibir resultados de Cookies
+  document.getElementById('btn-show-cookies').addEventListener('click', function() {
+    hideAllSections();
+    cookiesSection.classList.add('active');
 
+    browser.runtime.sendMessage({ type: "getResults" }).then(result => {
+      const { totalCookies, thirdPartyCookies } = result;
+      document.getElementById('results-cookies').textContent = 
+        `Total de cookies: ${totalCookies}, Cookies de terceira parte: ${thirdPartyCookies}`;
+    });
+  });
   function hideAllSections() {
     btnCalculateScore.classList.remove('active');
     scoreSection.classList.remove('active');
