@@ -5,11 +5,20 @@ document.addEventListener('DOMContentLoaded', function() {
   const hijackingSection = document.getElementById('section-results-hijacking');
   const canvasSection = document.getElementById('section-results-canvas');
 
+  // Função para esconder todas as seções
+  function hideAllSections() {
+    connectionsSection.classList.remove('active');
+    cookiesSection.classList.remove('active');
+    storageSection.classList.remove('active');
+    hijackingSection.classList.remove('active');
+    canvasSection.classList.remove('active');
+    scoreSection.classList.remove('active');
+  }
   // Função para exibir resultados de Cookies
   document.getElementById('btn-show-cookies').addEventListener('click', function() {
     hideAllSections();
     cookiesSection.classList.add('active');
-
+    console.log('show cookies');
     browser.runtime.sendMessage({ type: "getResults" }).then(result => {
       const { totalCookies, thirdPartyCookies } = result;
       document.getElementById('results-cookies').textContent = 
@@ -69,12 +78,5 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
 
-  // Função para esconder todas as seções
-  function hideAllSections() {
-    scoreSection.classList.remove('active');
-    cookiesSection.classList.remove('active');
-    storageSection.classList.remove('active');
-    hijackingSection.classList.remove('active');
-    canvasSection.classList.remove('active');
-  }
+
 });
