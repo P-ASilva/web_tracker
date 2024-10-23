@@ -56,6 +56,28 @@ document.addEventListener('DOMContentLoaded', function() {
       });
     });
   });
+  // Exibir a seção de Storage (LocalStorage)
+  btnShowStorage.addEventListener('click', function() {
+    hideAllSections();
+    storageSection.classList.add('active');
+
+    // Verifica e exibe o localStorage da aba atual
+    const storageList = document.createElement('ul');
+    storageSection.appendChild(storageList);
+
+    browser.tabs.query({active: true, currentWindow: true}).then(tabs => {
+      browser.tabs.executeScript(tabs[0].id, {
+        code: `Object.entries(localStorage).map(([key, value]) => key + ": " + value)`
+      }).then(results => {
+        storageList.innerHTML = '';  // Limpa a lista antes de popular
+        results[0].forEach(item => {
+          const listItem = document.createElement('li');
+          listItem.textContent = item;
+          storageList.appendChild(listItem);
+        });
+      });
+    });
+  });
   // Função para detecção de Hijacking e Hook (simples)
   btnDetectHijacking.addEventListener('click', function() {
     hideAllSections();
@@ -79,27 +101,6 @@ document.addEventListener('DOMContentLoaded', function() {
         } else {
           hijackingList.textContent = 'Nenhuma ameaça de Hijacking encontrada.';
         }
-      });
-    });
-  });
-  // Exibir a seção de Storage (LocalStorage)
-  btnShowStorage.addEventListener('click', function() {
-    hideAllSections();
-    storageSection.classList.add('active');
-
-    const storageList = document.createElement('ul');
-    storageSection.appendChild(storageList);
-
-    browser.tabs.query({active: true, currentWindow: true}).then(tabs => {
-      browser.tabs.executeScript(tabs[0].id, {
-        code: `Object.entries(localStorage).map(([key, value]) => key + ": " + value)`
-      }).then(results => {
-        storageList.innerHTML = '';  // Limpa a lista antes de popular
-        results[0].forEach(item => {
-          const listItem = document.createElement('li');
-          listItem.textContent = item;
-          storageList.appendChild(listItem);
-        });
       });
     });
   });
