@@ -9,7 +9,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
   function hideAllSections() {
     connectionsSection.classList.remove('active');
-    btnCalculateScore.classList.remove('active');
     scoreSection.classList.remove('active');
     cookiesSection.classList.remove('active');
     storageSection.classList.remove('active');
