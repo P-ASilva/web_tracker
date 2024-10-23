@@ -43,4 +43,27 @@ document.addEventListener('DOMContentLoaded', function() {
         `Total de cookies: ${totalCookies}, Cookies de terceira parte: ${thirdPartyCookies}`;
     });
   });
+  // Função para exibir resultados de Armazenamento Local
+  document.getElementById('btn-show-storage').addEventListener('click', function() {
+    hideAllSections();
+    storageSection.classList.add('active');
+
+    browser.runtime.sendMessage({ type: "getResults" }).then(result => {
+      const { localStorageItems } = result;
+      document.getElementById('results-storage').textContent = 
+        `Itens no armazenamento local: ${localStorageItems}`;
+    });
+  });
+
+  // Função para exibir resultados de Hijacking
+  document.getElementById('btn-detect-hijacking').addEventListener('click', function() {
+    hideAllSections();
+    hijackingSection.classList.add('active');
+
+    browser.runtime.sendMessage({ type: "getResults" }).then(result => {
+      const { hijackingDetected } = result;
+      document.getElementById('results-hijacking').textContent = 
+        hijackingDetected ? 'Hijacking detectado!' : 'Nenhum Hijacking detectado.';
+    });
+  });
 });
